@@ -1,0 +1,43 @@
+{
+  "id": "ai-chat",
+  "name": "AI Chat",
+  "description": "Interactive ChatGPT-style assistant powered by a compact open-source LLM running on your Google Colab runtime.",
+  "version": "1.0.0",
+  "category": "AI & Chat",
+  "icon": "ai",
+  "executionType": "colab",
+  "runtimeRequired": true,
+  "inputs": [
+    {
+      "id": "prompt",
+      "label": "Message",
+      "type": "text",
+      "required": true,
+      "placeholder": "Ask anything...",
+      "description": "Your prompt for the AI model"
+    },
+    {
+      "id": "modelId",
+      "label": "Model",
+      "type": "text",
+      "required": false,
+      "default": "Qwen/Qwen2.5-1.5B-Instruct",
+      "description": "Hugging Face instruct model ID"
+    }
+  ],
+  "outputs": [
+    {
+      "id": "response",
+      "label": "Response",
+      "type": "text",
+      "description": "Assistant reply"
+    }
+  ],
+  "notebookPath": "runtime/colab_launcher.ipynb",
+  "modulePath": "templates/ai-chat/chat_server.py",
+  "controls": {
+    "pausable": false,
+    "resumable": false,
+    "cancellable": true
+  }
+}

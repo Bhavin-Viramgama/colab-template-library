@@ -97,6 +97,9 @@ class ColabDaemon:
                     self._send_json(200, {"ok": True, "timestamp": time.time()})
                 elif path == "/runtime":
                     self._send_json(200, daemon.build_runtime_info())
+                elif path == "/ai/status":
+                    mgr = daemon._get_ai_manager()
+                    self._send_json(200, mgr.get_status())
                 elif path.startswith("/tasks/"):
                     task_id = path[len("/tasks/"):].strip("/")
                     status_path = os.path.join(daemon.task_dir, task_id, "status.json")
@@ -129,6 +132,42 @@ class ColabDaemon:
                     )
                     _write_json_atomic(cmd_file, body)
                     self._send_json(200, {"accepted": True})
+                elif path == "/ai/load":
+                    mgr = daemon._get_ai_manager()
+                    model_id = body.get("modelId")
+                    threading.Thread(
+                        target=lambda: mgr.ensure_loaded(model_id), daemon=True
+                    ).start()
+                    self._send_json(202, {"loading": True, "modelId": model_id or mgr.get_status()["modelId"]})
+                elif path == "/ai/chat":
+                    mgr = daemon._get_ai_manager()
+                    messages = body.get("messages") or []
+                    model_id = body.get("modelId")
+                    max_tokens = int(body.get("maxTokens") or 512)
+                    temperature = float(body.get("temperature") or 0.7)
+
+                    self.send_response(200)
+                    self.send_header("Content-Type", "application/x-ndjson; charset=utf-8")
+                    self.send_header("Cache-Control", "no-cache")
+                    self.end_headers()
+
+                    try:
+                        for token in mgr.stream_chat(
+                            messages=messages,
+                            model_id=model_id,
+                            max_new_tokens=max_tokens,
+                            temperature=temperature,
+                        ):
+                            line = json.dumps({"token": token}) + "\n"
+                            self.wfile.write(line.encode("utf-8"))
+                            self.wfile.flush()
+                        done_line = json.dumps({"done": True}) + "\n"
+                        self.wfile.write(done_line.encode("utf-8"))
+                        self.wfile.flush()
+                    except Exception as exc:
+                        err_line = json.dumps({"error": str(exc)}) + "\n"
+                        self.wfile.write(err_line.encode("utf-8"))
+                        self.wfile.flush()
                 elif path.startswith("/tasks/") and path.endswith("/control"):
                     task_id = path[len("/tasks/"):-len("/control")].strip("/")
                     ctrl_file = os.path.join(daemon.task_dir, task_id, "control.json")
@@ -181,6 +220,13 @@ class ColabDaemon:
                         self.publish_runtime_status()
         except Exception as exc:
             print(f"Quick tunnel failed (falling back to Drive bridge): {exc}")
+
+    def _get_ai_manager(self):
+        ai_mod = _load_module(
+            "chat_server",
+            os.path.join(self.repo_dir, "templates", "ai-chat", "chat_server.py"),
+        )
+        return ai_mod.get_ai_chat_manager()
 
     def build_runtime_info(self) -> Dict[str, Any]:
         info = self._get_runtime_info()
@@ -332,6 +378,17 @@ class ColabDaemon:
                         task_id=task_id,
                         filename=inputs.get("filename"),
                         destination=dest,
+                        status_dir=self.task_dir,
+                    )
+                elif template_id == "ai-chat":
+                    ai_mod = _load_module(
+                        "chat_server",
+                        os.path.join(self.repo_dir, "templates", "ai-chat", "chat_server.py"),
+                    )
+                    ai_mod.run_chat_task(
+                        prompt=inputs.get("prompt", ""),
+                        task_id=task_id,
+                        model_id=inputs.get("modelId"),
                         status_dir=self.task_dir,
                     )
                 else:

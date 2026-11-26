@@ -15,14 +15,14 @@
       "author": "Template Library"
     },
     {
-      "id": "calculator",
-      "name": "Calculator",
-      "description": "Perform mathematical calculations locally",
-      "category": "Utilities",
-      "icon": "calculator",
-      "executionType": "local",
-      "runtimeRequired": false,
-      "metadataPath": "templates/calculator/template.json",
+      "id": "ai-chat",
+      "name": "AI Chat",
+      "description": "Chat with a fast open-source LLM running on your Google Colab runtime",
+      "category": "AI & Chat",
+      "icon": "ai",
+      "executionType": "colab",
+      "runtimeRequired": true,
+      "metadataPath": "templates/ai-chat/template.json",
       "version": "1.0.0",
       "author": "Template Library"
     }

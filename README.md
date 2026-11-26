@@ -31,7 +31,7 @@ This repository contains templates that can be browsed and executed from the Col
 | Template | Type | Runtime Required | Description |
 |----------|------|-----------------|-------------|
 | Direct Download | Colab | Yes | Download files to Google Drive using aria2 |
-| Calculator | Local | No | Mathematical calculations on device |
+| AI Chat | Colab | Yes | ChatGPT-style conversational AI running on Colab |
 
 ## Adding New Templates
 

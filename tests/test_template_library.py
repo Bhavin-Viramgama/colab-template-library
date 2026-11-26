@@ -31,7 +31,8 @@ class TestTemplateLibrary(unittest.TestCase):
         self.assertEqual(manifest["version"], 1)
         ids = {t["id"] for t in manifest["templates"]}
         self.assertIn("direct-download", ids)
-        self.assertIn("calculator", ids)
+        self.assertIn("ai-chat", ids)
+        self.assertNotIn("calculator", ids)
         for entry in manifest["templates"]:
             meta_path = os.path.join(REPO_ROOT, entry["metadataPath"])
             self.assertTrue(os.path.isfile(meta_path), f"Missing {meta_path}")
