@@ -35,10 +35,10 @@ def _load_module(name: str, path: str):
 
 def _write_json_atomic(path: str, data: Dict[str, Any]) -> None:
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    tmp = f"{path}.tmp"
-    with open(tmp, "w", encoding="utf-8") as f:
+    # Write in-place so Google Drive FUSE preserves the existing Drive file ID
+    # instead of creating duplicate file IDs via os.replace().
+    with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2)
-    os.replace(tmp, path)
 
 
 class ColabDaemon:
@@ -172,6 +172,10 @@ class ColabDaemon:
                 continue
 
             if data.get("status") == "pending":
+                data["status"] = "running"
+                data["progressMessage"] = "Picked up by Colab daemon..."
+                data["lastUpdated"] = time.time()
+                _write_json_atomic(status_file, data)
                 self._launch_task_worker(entry, data)
 
     def _launch_task_worker(self, task_id: str, task_data: Dict[str, Any]) -> None:

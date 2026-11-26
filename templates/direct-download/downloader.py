@@ -85,12 +85,10 @@ class TaskStatus:
             return None
 
     def _write_status(self) -> None:
-        """Write status JSON atomically using a temporary file."""
-        tmp_path = f"{self.status_file}.tmp"
+        """Write status JSON in-place so Google Drive FUSE preserves the file ID."""
         try:
-            with open(tmp_path, "w", encoding="utf-8") as f:
+            with open(self.status_file, "w", encoding="utf-8") as f:
                 json.dump(self._status_data, f, indent=2)
-            os.replace(tmp_path, self.status_file)
         except OSError as e:
             print(f"Warning: Could not write status file: {e}")
 
