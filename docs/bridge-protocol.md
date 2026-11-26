@@ -25,11 +25,17 @@ Android App <---> Google Drive <---> Colab Runtime
 
 ```
 /MyDrive/.colab-tasks/
-├── runtime_status.json              # Runtime information
+├── runtime_status.json              # Runtime information (written by daemon)
+├── commands/                        # Remote daemon commands (written by app)
+│   └── {cmd}_{timestamp}.json       # refresh_stats, pull_library, unassign_runtime
 ├── {task_id}/
-│   ├── status.json                  # Task status (read by app)
-│   └── control.json                 # Control commands (written by app)
+│   ├── status.json                  # Task status (read by app / updated by daemon)
+│   └── control.json                 # Task control commands (pause, resume, cancel)
 ```
+
+## Universal Daemon (`runtime/colab_launcher.ipynb`)
+
+Run the single-cell universal launcher notebook once (`Runtime -> Run all`) to start `runtime/colab_daemon.py`. Once running, the Android app executes any template, pulls template updates, refreshes telemetry, and shuts down the Colab VM (`google.colab.runtime.unassign()`) remotely.
 
 ## Task Status Format
 

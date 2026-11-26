@@ -20,6 +20,7 @@ def load_module(name: str, rel_path: str):
 downloader = load_module("downloader", os.path.join("templates", "direct-download", "downloader.py"))
 task_manager = load_module("task_manager", os.path.join("runtime", "task_manager.py"))
 colab_bridge = load_module("colab_bridge", os.path.join("runtime", "colab_bridge.py"))
+colab_daemon = load_module("colab_daemon", os.path.join("runtime", "colab_daemon.py"))
 
 
 class TestTemplateLibrary(unittest.TestCase):
@@ -85,6 +86,22 @@ class TestTemplateLibrary(unittest.TestCase):
         self.assertIn("ramTotalMb", info)
         self.assertIn("storageTotalMb", info)
         self.assertIn("runtimeType", info)
+
+    def test_daemon_commands_and_status_publishing(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            daemon = colab_daemon.ColabDaemon(repo_dir=REPO_ROOT, task_dir=tmp)
+            info = daemon.publish_runtime_status()
+            self.assertEqual(info["daemonVersion"], "2.0.0")
+            self.assertTrue(os.path.isfile(os.path.join(tmp, "runtime_status.json")))
+
+            cmd_dir = os.path.join(tmp, "commands")
+            os.makedirs(cmd_dir, exist_ok=True)
+            cmd_file = os.path.join(cmd_dir, "cmd1.json")
+            with open(cmd_file, "w", encoding="utf-8") as f:
+                json.dump({"command": "refresh_stats"}, f)
+
+            daemon.process_commands()
+            self.assertFalse(os.path.exists(cmd_file))
 
 
 if __name__ == "__main__":
