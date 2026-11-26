@@ -1,0 +1,68 @@
+{
+  "id": "direct-download",
+  "name": "Direct Download",
+  "description": "Download files from direct URLs and save them to Google Drive using aria2 for maximum speed and reliability.",
+  "version": "1.0.0",
+  "category": "Storage",
+  "icon": "download",
+  "executionType": "colab",
+  "runtimeRequired": true,
+  "inputs": [
+    {
+      "id": "url",
+      "label": "Download URL",
+      "type": "url",
+      "required": true,
+      "placeholder": "https://example.com/file.zip",
+      "description": "Direct download link for the file",
+      "validation": {
+        "pattern": "^https?://[^\\s]+$",
+        "message": "Please enter a valid HTTP or HTTPS URL"
+      }
+    },
+    {
+      "id": "filename",
+      "label": "Filename",
+      "type": "text",
+      "required": false,
+      "placeholder": "Auto-detect from URL",
+      "description": "Custom filename for the downloaded file (optional)"
+    },
+    {
+      "id": "destination",
+      "label": "Destination Folder",
+      "type": "text",
+      "required": true,
+      "placeholder": "/MyDrive/Downloads",
+      "description": "Google Drive folder path to save the file",
+      "default": "/MyDrive/Downloads"
+    }
+  ],
+  "outputs": [
+    {
+      "id": "filePath",
+      "label": "File Path",
+      "type": "text",
+      "description": "Full path of the downloaded file in Google Drive"
+    },
+    {
+      "id": "fileSize",
+      "label": "File Size",
+      "type": "number",
+      "description": "Size of the downloaded file in bytes"
+    },
+    {
+      "id": "downloadTime",
+      "label": "Download Time",
+      "type": "number",
+      "description": "Total download time in seconds"
+    }
+  ],
+  "notebookPath": "templates/direct-download/notebook.ipynb",
+  "modulePath": "templates/direct-download/downloader.py",
+  "controls": {
+    "pausable": true,
+    "resumable": true,
+    "cancellable": true
+  }
+}

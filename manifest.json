@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "lastUpdated": "2026-11-26",
+  "templates": [
+    {
+      "id": "direct-download",
+      "name": "Direct Download",
+      "description": "Download files directly to Google Drive using aria2",
+      "category": "Storage",
+      "icon": "download",
+      "executionType": "colab",
+      "runtimeRequired": true,
+      "metadataPath": "templates/direct-download/template.json",
+      "version": "1.0.0",
+      "author": "Template Library"
+    },
+    {
+      "id": "calculator",
+      "name": "Calculator",
+      "description": "Perform mathematical calculations locally",
+      "category": "Utilities",
+      "icon": "calculator",
+      "executionType": "local",
+      "runtimeRequired": false,
+      "metadataPath": "templates/calculator/template.json",
+      "version": "1.0.0",
+      "author": "Template Library"
+    }
+  ]
+}
