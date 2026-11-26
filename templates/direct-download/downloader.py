@@ -62,12 +62,12 @@ class TaskStatus:
         self._write_status()
 
     def update(self, **kwargs) -> None:
-        """Update status fields and write atomically to disk."""
+        """Update status fields and write in-place to disk."""
         self._status_data.update(kwargs)
         total = self._status_data.get("totalBytes", 0) or 0
         completed = self._status_data.get("completedBytes", 0) or 0
         if total > 0 and "progress" not in kwargs:
-            self._status_data["progress"] = min(100, int((completed / total) * 100))
+            self._status_data["progress"] = min(100.0, round((completed / total) * 100.0, 1))
         self._status_data["lastUpdated"] = time.time()
         self._write_status()
 
