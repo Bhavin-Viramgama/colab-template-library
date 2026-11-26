@@ -15,6 +15,18 @@
       "author": "Template Library"
     },
     {
+      "id": "movie-downloader",
+      "name": "Movie & Series Vault",
+      "description": "Download movies or web-series .zip/.rar archives, optionally encrypt filenames & video into a zero-knowledge Drive vault",
+      "category": "Media & Privacy",
+      "icon": "movie",
+      "executionType": "colab",
+      "runtimeRequired": true,
+      "metadataPath": "templates/movie-downloader/template.json",
+      "version": "1.0.0",
+      "author": "Template Library"
+    },
+    {
       "id": "ai-chat",
       "name": "AI Chat",
       "description": "Chat with a fast open-source LLM running on your Google Colab runtime",

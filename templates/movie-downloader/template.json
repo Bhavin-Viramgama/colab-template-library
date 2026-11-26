@@ -1,0 +1,66 @@
+{
+  "id": "movie-downloader",
+  "name": "Movie & Series Vault",
+  "description": "Download direct videos or .zip/.rar web series packs to your Google Drive Movies folder, with optional AES-256-GCM filename and stream encryption.",
+  "version": "1.0.0",
+  "category": "Media & Privacy",
+  "icon": "movie",
+  "executionType": "colab",
+  "runtimeRequired": true,
+  "inputs": [
+    {
+      "id": "url",
+      "label": "Movie or Archive URL",
+      "type": "url",
+      "required": true,
+      "placeholder": "https://example.com/movie.mkv or series.zip",
+      "description": "Direct link to a video file (.mp4, .mkv, .avi) or multi-episode .zip/.rar archive."
+    },
+    {
+      "id": "title",
+      "label": "Movie / Series Title (Optional)",
+      "type": "text",
+      "required": false,
+      "placeholder": "Auto-detect from file or archive name",
+      "description": "Optional display title (used as series title when unpacking .zip/.rar episodes)."
+    },
+    {
+      "id": "destination",
+      "label": "Google Drive Folder",
+      "type": "text",
+      "required": false,
+      "placeholder": "/MyDrive/Movies",
+      "default": "/MyDrive/Movies",
+      "description": "Target Drive folder scanned by the built-in Netflix-style Movies streamer."
+    },
+    {
+      "id": "encrypt",
+      "label": "Encrypt Video & Filename (Zero-Knowledge)",
+      "type": "boolean",
+      "required": false,
+      "default": "true",
+      "description": "Encrypts titles, metadata, and streamable 1 MB AES-256-GCM blocks so Google Drive cannot scan or open your videos."
+    },
+    {
+      "id": "extract_archives",
+      "label": "Extract .zip / .rar Archives (Web Series)",
+      "type": "boolean",
+      "required": false,
+      "default": "true",
+      "description": "Unpacks .zip/.rar/.7z archives in Colab temp storage so every episode can be streamed individually."
+    }
+  ],
+  "outputs": [
+    {
+      "id": "status",
+      "label": "Upload Status",
+      "type": "text",
+      "description": "Processed files and Drive vault targets"
+    }
+  ],
+  "controls": {
+    "pausable": false,
+    "resumable": false,
+    "cancellable": true
+  }
+}
