@@ -89,9 +89,9 @@ class TestTemplateLibrary(unittest.TestCase):
 
     def test_daemon_commands_and_status_publishing(self):
         with tempfile.TemporaryDirectory() as tmp:
-            daemon = colab_daemon.ColabDaemon(repo_dir=REPO_ROOT, task_dir=tmp)
+            daemon = colab_daemon.ColabDaemon(repo_dir=REPO_ROOT, task_dir=tmp, enable_tunnel=False)
             info = daemon.publish_runtime_status()
-            self.assertEqual(info["daemonVersion"], "2.0.0")
+            self.assertEqual(info["daemonVersion"], "2.1.0")
             self.assertTrue(os.path.isfile(os.path.join(tmp, "runtime_status.json")))
 
             cmd_dir = os.path.join(tmp, "commands")

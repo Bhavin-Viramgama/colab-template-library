@@ -85,10 +85,12 @@ class TaskStatus:
             return None
 
     def _write_status(self) -> None:
-        """Write status JSON in-place so Google Drive FUSE preserves the file ID."""
+        """Write status JSON in-place and fsync so Drive FUSE flushes promptly."""
         try:
             with open(self.status_file, "w", encoding="utf-8") as f:
                 json.dump(self._status_data, f, indent=2)
+                f.flush()
+                os.fsync(f.fileno())
         except OSError as e:
             print(f"Warning: Could not write status file: {e}")
 
@@ -363,7 +365,7 @@ def download_file(
                     progressMessage="Downloading...",
                 )
 
-            time.sleep(1.0)
+            time.sleep(0.5)
     except Exception as exc:
         if not isinstance(exc, DownloadError):
             status.update(status=TaskStatus.FAILED, error=str(exc), progressMessage="Download failed")
